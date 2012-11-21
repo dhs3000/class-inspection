@@ -69,7 +69,7 @@ public class ClassInspectorTest extends TestCase {
     @Test
     public void testFindClassesAssignableFromBaseClass() {
         Collection<Class<? extends BaseClass>> classes = ClassInspectionUtil.findClassesAssignableFrom(BaseClass.class, this.getClass().getPackage().getName() + ".testpackage_with_classhierarchy");
-        //       Collection<Class<?>> classes = ClassInspectorUtil.findClassesAssignableFrom(BaseClass.class, "de.his");
+        //       Collection<Class<?>> classes = ClassInspectionUtil.findClassesAssignableFrom(BaseClass.class, "de.his");
 
         System.out.println(classes);
         System.out.println(classes.size());
@@ -85,7 +85,7 @@ public class ClassInspectorTest extends TestCase {
      */
     @Test
     public void testFindClassesAssignableFromSuperBaseClass() {
-//        Collection<Class<?>> classes = ClassInspectorUtil.findClassesAssignableFrom(SuperBaseClass.class, this.getClass().getPackage().getName() + ".testpackage_with_classhierarchy");
+//        Collection<Class<?>> classes = ClassInspectionUtil.findClassesAssignableFrom(SuperBaseClass.class, this.getClass().getPackage().getName() + ".testpackage_with_classhierarchy");
               Collection<Class<? extends SuperBaseClass>> classes = ClassInspectionUtil.findClassesAssignableFrom(SuperBaseClass.class, "de.dennishoersch.util");
 
         System.out.println(classes);
@@ -115,7 +115,7 @@ public class ClassInspectorTest extends TestCase {
     @Test
     public void testFindAnnotated() {
         Collection<Class<?>> classes = ClassInspectionUtil.findAnnotatedClasses(ClassInspectorTestAnnotationOnlyOnType.class, this.getClass().getPackage().getName());
-        //        Collection<Class<?>> classes = ClassInspectorUtil.findAnnotatedClasses(ClassInspectorTestAnnotationOnlyOnType.class, "de.his");
+        //        Collection<Class<?>> classes = ClassInspectionUtil.findAnnotatedClasses(ClassInspectorTestAnnotationOnlyOnType.class, "de.his");
 
 
         System.out.println(classes);
@@ -131,7 +131,7 @@ public class ClassInspectorTest extends TestCase {
     @Test
     public void testFindAnnotatedElementsOnClassAndMethod() {
         Collection<ClassAnnotationMetadata> classes = ClassInspectionUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnTypeAndMethod.class, this.getClass().getPackage().getName());
-        //        Collection<ClassMetadata> classes = ClassInspectorUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnTypeAndMethod.class, "de.his");
+        //        Collection<ClassMetadata> classes = ClassInspectionUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnTypeAndMethod.class, "de.his");
 
 
         System.out.println(classes);
@@ -150,7 +150,7 @@ public class ClassInspectorTest extends TestCase {
     @Test
     public void testFindAnnotatedElementsOnClass() {
         Collection<ClassAnnotationMetadata> classes = ClassInspectionUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnType.class, this.getClass().getPackage().getName());
-        //        Collection<ClassMetadata> classes = ClassInspectorUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnType.class, "de.his");
+        //        Collection<ClassMetadata> classes = ClassInspectionUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnType.class, "de.his");
 
 
         System.out.println(classes);
