@@ -29,23 +29,23 @@ import java.util.Collection;
  */
 public interface ClassAnnotationMetadata {
 
-    /**
-     * @return the related class object
-     */
-    Class<?> getRelatedClass();
+	/**
+	 * @return the related class object
+	 */
+	Class<?> getRelatedClass();
 
-    /**
-     * @return is the related class object annotated itself?
-     */
-    boolean isRelateedClassAnnotated();
+	/**
+	 * @return is the related class object annotated itself?
+	 */
+	boolean isRelateedClassAnnotated();
 
-    /**
-     * @return all annotated fields
-     */
-    Collection<Field> getAnnotatedFields();
+	/**
+	 * @return all annotated fields
+	 */
+	Collection<Field> getAnnotatedFields();
 
-    /**
-     * @return all annotated methods
-     */
-    Collection<Method> getAnnotatedMethods();
+	/**
+	 * @return all annotated methods
+	 */
+	Collection<Method> getAnnotatedMethods();
 }
