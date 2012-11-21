@@ -34,6 +34,7 @@ import de.dennishoersch.util.inspection.InspectionHelper;
 
 /**
  * An inspector that checks if a class is annotated with a specific annotation and if so collects it.
+ * @author hoersch
  */
 public class ClassesAnnotatedWith implements ClassInspector<Class<?>> {
     private static final Logger logger = Logger.getLogger(ClassesAnnotatedWith.class);

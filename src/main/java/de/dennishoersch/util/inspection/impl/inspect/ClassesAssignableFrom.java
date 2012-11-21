@@ -34,6 +34,7 @@ import de.dennishoersch.util.inspection.InspectionHelper.ClassInfo;
 
 /**
  * An inspector that checks if a class is assignable from a given class and if so collects it.
+ * @author hoersch
  * @param <T>
  */
 public class ClassesAssignableFrom<T> implements ClassInspector<Class<? extends T>> {

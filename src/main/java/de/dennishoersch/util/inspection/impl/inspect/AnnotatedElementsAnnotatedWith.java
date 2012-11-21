@@ -51,6 +51,7 @@ import de.dennishoersch.util.inspection.InspectionHelper;
 /**
  * An inspector that checks if a class or filed within or a method within is
  * annotated with a specific annotation and if so collects it.
+ * @author hoersch
  */
 public class AnnotatedElementsAnnotatedWith implements ClassInspector<ClassAnnotationMetadata> {
     private static final Logger logger = Logger.getLogger(AnnotatedElementsAnnotatedWith.class);
