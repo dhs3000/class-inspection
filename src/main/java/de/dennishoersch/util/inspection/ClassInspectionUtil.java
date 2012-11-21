@@ -27,7 +27,7 @@ import de.dennishoersch.util.inspection.AnnotatedElementsAnnotatedWith.ClassMeta
  *
  * @author hoersch
  */
-public class ClassInspectorUtil {
+public class ClassInspectionUtil {
 
     /**
      * Attempts to discover elements that are matched with the given inspector.
