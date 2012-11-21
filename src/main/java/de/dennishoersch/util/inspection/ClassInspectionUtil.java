@@ -21,10 +21,10 @@ package de.dennishoersch.util.inspection;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import de.dennishoersch.util.inspection.impl.AnnotatedElementsAnnotatedWith;
-import de.dennishoersch.util.inspection.impl.ClassCollector;
-import de.dennishoersch.util.inspection.impl.ClassesAnnotatedWith;
-import de.dennishoersch.util.inspection.impl.ClassesAssignableFrom;
+import de.dennishoersch.util.inspection.impl.collect.ClassCollector;
+import de.dennishoersch.util.inspection.impl.inspect.AnnotatedElementsAnnotatedWith;
+import de.dennishoersch.util.inspection.impl.inspect.ClassesAnnotatedWith;
+import de.dennishoersch.util.inspection.impl.inspect.ClassesAssignableFrom;
 
 /**
  * Utilities to inspect and discover classes (elements) that match a specific
@@ -42,8 +42,8 @@ public class ClassInspectionUtil {
      *            package name to scan recursively
      * @return matched classes
      */
-    public static <T> Collection<T> findElements(ClassInspector<T> inspector, String packageName) {
-        return new ClassCollector<T>(inspector, packageName).findAndLetInspect().getElements();
+    public static <T, CI extends ClassInspector<T>> Collection<T> findElements(CI inspector, String packageName) {
+        return new ClassCollector<T, CI>(inspector, packageName).findAndLetInspect().getElements();
     }
 
     /**
