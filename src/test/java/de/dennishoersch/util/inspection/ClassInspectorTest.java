@@ -27,7 +27,6 @@ import org.junit.Test;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 
-import de.dennishoersch.util.inspection.AnnotatedElementsAnnotatedWith.ClassMetadata;
 import de.dennishoersch.util.inspection.testpackage.PackagedAnnotatedAndMethodAnnotatedTestClass;
 import de.dennishoersch.util.inspection.testpackage.PackagedAnnotatedTestClass;
 import de.dennishoersch.util.inspection.testpackage.PackagedNotAnnotatedTestClass;
@@ -131,17 +130,17 @@ public class ClassInspectorTest extends TestCase {
      */
     @Test
     public void testFindAnnotatedElementsOnClassAndMethod() {
-        Collection<ClassMetadata> classes = ClassInspectionUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnTypeAndMethod.class, this.getClass().getPackage().getName());
+        Collection<ClassAnnotationMetadata> classes = ClassInspectionUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnTypeAndMethod.class, this.getClass().getPackage().getName());
         //        Collection<ClassMetadata> classes = ClassInspectorUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnTypeAndMethod.class, "de.his");
 
 
         System.out.println(classes);
         assertEquals("Number of found classes", 1, classes.size());
-        ClassMetadata classMetadata = classes.iterator().next();
-        assertTrue("Class is annotated", classMetadata.isClassAnnotated);
-        assertTrue("Class is PackagedAnnotatedAndMethodAnnotatedTestClass.class", classMetadata.clazz.equals(PackagedAnnotatedAndMethodAnnotatedTestClass.class));
-        assertEquals("Number of annotated methods", 1, classMetadata.annotatedMethods.size());
-        assertEquals("Number of annotated fields", 0, classMetadata.annotatedFields.size());
+        ClassAnnotationMetadata classMetadata = classes.iterator().next();
+        assertTrue("Class is annotated", classMetadata.isRelateedClassAnnotated());
+        assertTrue("Class is PackagedAnnotatedAndMethodAnnotatedTestClass.class", classMetadata.getRelatedClass().equals(PackagedAnnotatedAndMethodAnnotatedTestClass.class));
+        assertEquals("Number of annotated methods", 1, classMetadata.getAnnotatedMethods().size());
+        assertEquals("Number of annotated fields", 0, classMetadata.getAnnotatedFields().size());
 
     }
 
@@ -150,15 +149,15 @@ public class ClassInspectorTest extends TestCase {
      */
     @Test
     public void testFindAnnotatedElementsOnClass() {
-        Collection<ClassMetadata> classes = ClassInspectionUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnType.class, this.getClass().getPackage().getName());
+        Collection<ClassAnnotationMetadata> classes = ClassInspectionUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnType.class, this.getClass().getPackage().getName());
         //        Collection<ClassMetadata> classes = ClassInspectorUtil.findAnnotatedElements(ClassInspectorTestAnnotationOnlyOnType.class, "de.his");
 
 
         System.out.println(classes);
         assertEquals("Number of found classes", 2, classes.size());
-        for (ClassMetadata classMetadata : classes) {
-            assertEquals("Number of annotated methods", 0, classMetadata.annotatedMethods.size());
-            assertEquals("Number of annotated fields", 0, classMetadata.annotatedFields.size());
+        for (ClassAnnotationMetadata classMetadata : classes) {
+            assertEquals("Number of annotated methods", 0, classMetadata.getAnnotatedMethods().size());
+            assertEquals("Number of annotated fields", 0, classMetadata.getAnnotatedMethods().size());
         }
     }
 }
