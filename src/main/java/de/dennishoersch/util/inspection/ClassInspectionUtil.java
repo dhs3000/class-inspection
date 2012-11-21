@@ -21,30 +21,38 @@ package de.dennishoersch.util.inspection;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import de.dennishoersch.util.inspection.AnnotatedElementsAnnotatedWith.ClassMetadata;
+import de.dennishoersch.util.inspection.impl.AnnotatedElementsAnnotatedWith;
+import de.dennishoersch.util.inspection.impl.ClassCollector;
+import de.dennishoersch.util.inspection.impl.ClassesAnnotatedWith;
+import de.dennishoersch.util.inspection.impl.ClassesAssignableFrom;
 
 /**
+ * Utilities to inspect and discover classes (elements) that match a specific
+ * criteria.
  *
  * @author hoersch
  */
 public class ClassInspectionUtil {
 
     /**
-     * Attempts to discover elements that are matched with the given inspector.
+     * Collects elements that are matched by the given inspector.
+     *
      * @param inspector
-     * @param packageName package name to scan (including subpackages) for classes
+     * @param packageName
+     *            package name to scan recursively
      * @return matched classes
      */
     public static <T> Collection<T> findElements(ClassInspector<T> inspector, String packageName) {
-        return new ClassEnumerator<T>(inspector, packageName).findAndLetInspect().getElements();
+        return new ClassCollector<T>(inspector, packageName).findAndLetInspect().getElements();
     }
 
-
     /**
-     * Attempts to discover classes that are assignable from the given class.
+     * Collects classes that are assignable from the given class.
      *
-     * @param clazz the class that matching classes should be assignable from
-     * @param packageName package name to scan (including subpackages) for classes
+     * @param clazz
+     *            the class that matching classes should be assignable from
+     * @param packageName
+     *            package name to scan recursively
      * @return matched classes
      */
     public static <T> Collection<Class<? extends T>> findClassesAssignableFrom(Class<T> clazz, String packageName) {
@@ -52,10 +60,11 @@ public class ClassInspectionUtil {
     }
 
     /**
-     * Attempts to discover classes that are annotated with to the annotation.
+     * Collects classes that are annotated with the annotation.
      *
-     * @param annotation the annotation that should be present on matching classes
-     * @param packageName package name to scan (including subpackages) for classes
+     * @param annotation
+     * @param packageName
+     *            package name to scan recursively
      * @return matched classes
      */
     public static Collection<Class<?>> findAnnotatedClasses(Class<? extends Annotation> annotation, String packageName) {
@@ -63,13 +72,15 @@ public class ClassInspectionUtil {
     }
 
     /**
-     * Attempts to discover elements that are annotated with to the annotation.
+     * Collects class metadata of classes and members are annotated with the
+     * annotation.
      *
-     * @param annotation the annotation that should be present on matching classes
-     * @param packageName package name to scan (including subpackages) for classes
+     * @param annotation
+     * @param packageName
+     *            package name to scan recursively
      * @return matched classes
      */
-    public static Collection<ClassMetadata> findAnnotatedElements(Class<? extends Annotation> annotation, String packageName) {
+    public static Collection<ClassAnnotationMetadata> findAnnotatedElements(Class<? extends Annotation> annotation, String packageName) {
         return findElements(new AnnotatedElementsAnnotatedWith(annotation), packageName);
     }
 }
