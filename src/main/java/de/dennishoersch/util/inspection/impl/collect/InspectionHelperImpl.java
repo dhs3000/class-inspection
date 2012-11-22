@@ -18,6 +18,8 @@
  */
 package de.dennishoersch.util.inspection.impl.collect;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Map;
 
@@ -49,29 +51,39 @@ final class InspectionHelperImpl implements InspectionHelper {
         ClassInfo classFile = _classFiles.get(name);
         if (classFile == null) {
             if (name.startsWith("java") || name.startsWith("com.sun")) {
-                // java-*-Packages, welche z.b. in rt.jar liegen, können nicht ausgelesen werden, sollten aber auch nicht den Heap zumüllen (?)
+                // java-* packages, they might be in 'rt.jar' and could not be read (?). But there shouldn't be so many so loading them into the JVM won't take too much memory...
                 classFile = new NativeClassInfo(_classloader.loadClass(name));
             } else {
                 Entry entry = _entries.get(name);
                 if (entry == null) {
                     int lastDot = name.lastIndexOf(".");
                     if (lastDot >= 0) {
-                        // Klasse ist nicht im gerade betrachteten Package, dieses Package nachladen (aber ausdrücklich nicht inspizieren)
+                        // The class isn't in the inspected package tree. Load it but don't inspect it!
                         String packageName = name.substring(0, lastDot);
 
-                        Map<String, Entry> newEntries = new ClassFilesCollector(_classloader, packageName).getEntries();
-                        _entries.putAll(newEntries);
+                        _entries.putAll(new ClassFilesCollector(_classloader, packageName).getEntries());
                         entry = _entries.get(name);
                     }
                     if (entry == null) {
                         throw new ClassNotFoundException(name);
                     }
                 }
-                classFile = new ClassFileClassInfo(ClassCollector.toClassFile(entry.getContent()));
+                classFile = new ClassFileClassInfo(toClassFile(entry.getContent()));
             }
             _classFiles.put(name, classFile);
         }
         return classFile;
+    }
+
+    @Override
+    public ClassInfo toClassInfo(ClassFile type) {
+        return new ClassFileClassInfo(type);
+    }
+
+    static ClassFile toClassFile(byte[] classContent) throws IOException {
+        DataInputStream dstream = new DataInputStream(new ByteArrayInputStream(classContent));
+        ClassFile type = new ClassFile(dstream);
+        return type;
     }
 
     private static class NativeClassInfo implements ClassInfo {
@@ -109,10 +121,4 @@ final class InspectionHelperImpl implements InspectionHelper {
             return _classFile.getSuperclass();
         }
     }
-
-    @Override
-    public ClassInfo toClassInfo(ClassFile type) {
-        return new ClassFileClassInfo(type);
-    }
-
 }

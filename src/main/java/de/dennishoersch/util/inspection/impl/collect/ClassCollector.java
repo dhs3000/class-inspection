@@ -18,8 +18,8 @@
  */
 package de.dennishoersch.util.inspection.impl.collect;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
+import static de.dennishoersch.util.inspection.impl.collect.InspectionHelperImpl.toClassFile;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -55,8 +55,7 @@ public class ClassCollector<T, CI extends ClassInspector<T>> {
     }
 
     /**
-     * Scans for classes starting at the package provided and descending into subpackages.
-     * Each class is offered up to the inspector as it is discovered.
+     * Scans for classes recursively starting at the given package and let the inspector inspect each one.
      *
      * @return the inspector
      */
@@ -74,17 +73,9 @@ public class ClassCollector<T, CI extends ClassInspector<T>> {
             }
         }
 
-
         return _inspector;
     }
 
-    /**
-     * Add the class designated by the fully qualified class name provided to the set of
-     * resolved classes if and only if it is approved by the Test supplied.
-     *
-     * @param inspector the test used to determine if the class matches
-     * @param fqn the fully qualified name of a class
-     */
     private void letInspect(InspectionHelper helper, String className, byte[] classContent) {
         try {
 
@@ -98,12 +89,6 @@ public class ClassCollector<T, CI extends ClassInspector<T>> {
         }
     }
 
-    static ClassFile toClassFile(byte[] classContent) throws IOException {
-        DataInputStream dstream = new DataInputStream(new ByteArrayInputStream(classContent));
-        ClassFile type = new ClassFile(dstream);
-        return type;
-    }
-
     /**
      * Sets an ClassLoader to be used for class loading. The default is the context ClassLoader.
      *
@@ -112,5 +97,4 @@ public class ClassCollector<T, CI extends ClassInspector<T>> {
     public void setClassLoader(ClassLoader classloader) {
         _classloader = classloader;
     }
-
 }
