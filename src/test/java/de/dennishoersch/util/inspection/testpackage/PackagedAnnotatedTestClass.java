@@ -20,12 +20,6 @@ package de.dennishoersch.util.inspection.testpackage;
 
 import de.dennishoersch.util.inspection.ClassInspectorTestAnnotationOnlyOnType;
 
-
-/**
- * Annotierte Testklasse für ClassInspectorTest
- *
- * @author hoersch
- */
 @ClassInspectorTestAnnotationOnlyOnType
 public class PackagedAnnotatedTestClass {
 

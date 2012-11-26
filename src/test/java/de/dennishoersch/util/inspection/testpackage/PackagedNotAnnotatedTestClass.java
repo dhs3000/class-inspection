@@ -18,12 +18,6 @@
  */
 package de.dennishoersch.util.inspection.testpackage;
 
-
-/**
- * Nicht annotierte Testklasse für ClassInspectorTest
- *
- * @author hoersch
- */
 public class PackagedNotAnnotatedTestClass {
     //
 }
