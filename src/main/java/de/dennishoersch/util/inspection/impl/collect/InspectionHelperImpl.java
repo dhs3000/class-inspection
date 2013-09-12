@@ -12,8 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package de.dennishoersch.util.inspection.impl.collect;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.transform;
+import static de.dennishoersch.util.inspection.ClassInspectionUtil.classToName;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -27,95 +31,118 @@ import com.google.common.collect.Maps;
 import de.dennishoersch.util.inspection.InspectionHelper;
 
 final class InspectionHelperImpl implements InspectionHelper {
-    private Map<String, ClassInfo> _classFiles = Maps.newHashMap();
+	private final Map<String, ClassInfo> _classFiles = Maps.newHashMap();
 
-    private final ClassLoader _classloader;
+	private final ClassLoader _classloader;
 
-    private final Map<String, Entry> _entries = Maps.newLinkedHashMap();
+	private final Map<String, Entry> _entries = Maps.newLinkedHashMap();
 
-    InspectionHelperImpl(ClassLoader classloader, Map<String, Entry> entries) {
-        _classloader = classloader;
-        _entries.putAll(entries);
-    }
+	InspectionHelperImpl(ClassLoader classloader, Map<String, Entry> entries) {
+		_classloader = classloader;
+		_entries.putAll(entries);
+	}
 
-    @Override
-    public Class<?> loadClass(ClassFile type) throws ClassNotFoundException {
-        return _classloader.loadClass(type.getName());
-    }
+	@Override
+	public Class<?> loadClass(ClassFile type) throws ClassNotFoundException {
+		return _classloader.loadClass(type.getName());
+	}
 
-    @Override
-    public ClassInfo getClassInfo(String name) throws IOException, ClassNotFoundException {
-        ClassInfo classFile = _classFiles.get(name);
-        if (classFile == null) {
-            if (name.startsWith("java") || name.startsWith("com.sun")) {
-                // java-* packages, they might be in 'rt.jar' and could not be read (?). But there shouldn't be so many so loading them into the JVM won't take too much memory...
-                classFile = new NativeClassInfo(_classloader.loadClass(name));
-            } else {
-                Entry entry = _entries.get(name);
-                if (entry == null) {
-                    int lastDot = name.lastIndexOf(".");
-                    if (lastDot >= 0) {
-                        // The class isn't in the inspected package tree. Load it but don't inspect it!
-                        String packageName = name.substring(0, lastDot);
+	@Override
+	public ClassInfo getClassInfo(String name) throws IOException, ClassNotFoundException {
+		ClassInfo classFile = _classFiles.get(name);
+		if (classFile == null) {
+			if (name.startsWith("java") || name.startsWith("com.sun")) {
+				// java-* packages, they might be in 'rt.jar' and could not be
+				// read (?). But there shouldn't be so many so loading them into
+				// the JVM won't take too much memory...
+				classFile = new NativeClassInfo(_classloader.loadClass(name));
+			} else {
+				Entry entry = _entries.get(name);
+				if (entry == null) {
+					int lastDot = name.lastIndexOf(".");
+					if (lastDot >= 0) {
+						// The class isn't in the inspected package tree. Load
+						// it but don't inspect it!
+						String packageName = name.substring(0, lastDot);
 
-                        _entries.putAll(new ClassFilesCollector(_classloader, packageName).getEntries());
-                        entry = _entries.get(name);
-                    }
-                    if (entry == null) {
-                        throw new ClassNotFoundException(name);
-                    }
-                }
-                classFile = new ClassFileClassInfo(toClassFile(entry.getContent()));
-            }
-            _classFiles.put(name, classFile);
-        }
-        return classFile;
-    }
+						_entries.putAll(new ClassFilesCollector(_classloader, packageName).getEntries());
+						entry = _entries.get(name);
+					}
+					if (entry == null) {
+						throw new ClassNotFoundException(name);
+					}
+				}
+				classFile = new ClassFileClassInfo(toClassFile(entry.getContent()));
+			}
+			_classFiles.put(name, classFile);
+		}
+		return classFile;
+	}
 
-    @Override
-    public ClassInfo toClassInfo(ClassFile type) {
-        return new ClassFileClassInfo(type);
-    }
+	@Override
+	public ClassInfo toClassInfo(ClassFile type) {
+		return new ClassFileClassInfo(type);
+	}
 
-    static ClassFile toClassFile(byte[] classContent) throws IOException {
-        DataInputStream dstream = new DataInputStream(new ByteArrayInputStream(classContent));
-        ClassFile type = new ClassFile(dstream);
-        return type;
-    }
+	static ClassFile toClassFile(byte[] classContent) throws IOException {
+		DataInputStream dstream = new DataInputStream(new ByteArrayInputStream(classContent));
+		ClassFile type = new ClassFile(dstream);
+		return type;
+	}
 
-    private static class NativeClassInfo implements ClassInfo {
-        private final Class<?> _clazz;
+	private static class NativeClassInfo implements ClassInfo {
+		private final Class<?> _clazz;
 
-        NativeClassInfo(Class<?> clazz) {
-            this._clazz = clazz;
-        }
+		NativeClassInfo(Class<?> clazz) {
+			this._clazz = clazz;
+		}
 
-        @Override
-        public String getName() {
-            return _clazz.getName();
-        }
+		@Override
+		public String getName() {
+			return _clazz.getName();
+		}
 
-        @Override
-        public String getSuperclass() {
-            return _clazz.getSuperclass().getName();
-        }
-    }
+		@Override
+		public String getSuperclass() {
+			return _clazz.getSuperclass().getName();
+		}
 
-    private static class ClassFileClassInfo implements ClassInfo {
-        private final ClassFile _classFile;
+		@Override
+		public String[] getInterfaces() {
+			return transform(newArrayList(_clazz.getInterfaces()), classToName()).toArray(new String[] {});
+		}
 
-        ClassFileClassInfo(ClassFile classFile) {
-            this._classFile = classFile;
-        }
+		@Override
+		public String toString() {
+			return getClass().getSimpleName() + "(" + _clazz.getName() + ")";
+		}
+	}
 
-        @Override
-        public String getName() {
-            return _classFile.getName();
-        }
+	private static class ClassFileClassInfo implements ClassInfo {
+		private final ClassFile _classFile;
 
-        @Override
-        public String getSuperclass() {
-            return _classFile.getSuperclass();
-        }
-    }
+		ClassFileClassInfo(ClassFile classFile) {
+			this._classFile = classFile;
+		}
+
+		@Override
+		public String getName() {
+			return _classFile.getName();
+		}
+
+		@Override
+		public String getSuperclass() {
+			return _classFile.getSuperclass();
+		}
+
+		@Override
+		public String[] getInterfaces() {
+			return _classFile.getInterfaces();
+		}
+
+		@Override
+		public String toString() {
+			return getClass().getSimpleName() + "(" + _classFile.getName() + ")";
+		}
+	}
 }

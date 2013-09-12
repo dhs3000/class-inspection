@@ -18,30 +18,35 @@ package de.dennishoersch.util.inspection.impl.inspect;
 import de.dennishoersch.util.inspection.InspectionHelper.ClassInfo;
 
 /**
- * An inspector that checks if a class is assignable from a given class and if
- * so collects it.
+ * An inspector that checks if a class is implementing a given interface and
+ * collects it.
  * 
  * @author hoersch
  * @param <T>
  */
-public class ClassesAssignableFrom<T> extends ClassesMatching<T> {
+public class ClassesImplementing<T> extends ClassesMatching<T> {
 
-	private final Class<T> clazz;
+	private final Class<T> iface;
 
 	/**
-	 * @param clazz
+	 * @param iface
 	 */
-	public ClassesAssignableFrom(Class<T> clazz) {
-		this.clazz = clazz;
+	public ClassesImplementing(Class<T> iface) {
+		this.iface = iface;
 	}
 
 	@Override
 	protected boolean isMatch(ClassInfo potentialMatch) {
-		return clazz.equals(Object.class) || potentialMatch.getName().equals(clazz.getName()) || potentialMatch.getSuperclass().equals(clazz.getName());
+		for (String implementedInterface : potentialMatch.getInterfaces()) {
+			if (implementedInterface.equals(iface.getName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public String toString() {
-		return "classes assignable from " + clazz.getSimpleName();
+		return "classes implementing " + iface.getSimpleName();
 	}
 }
