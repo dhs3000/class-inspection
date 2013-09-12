@@ -3,3 +3,6 @@ target/**/*
 logs/*
 logs/**/*
 /target
+/bin
+/.gradle
+/build
