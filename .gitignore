@@ -1,8 +1,9 @@
 target/*
-target/**/*
 logs/*
-logs/**/*
-/target
-/bin
-/.gradle
-/build
+bin/*
+.gradle/*
+build/*
+.classpath
+.project
+.settings/*
+gradle.properties
