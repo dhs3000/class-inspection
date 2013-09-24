@@ -43,9 +43,9 @@ public class InstanceCollectorTest {
     public void testInstances() {
         InstanceCollector<TestInterface> instanceCollector = new InstanceCollector<>(TestInterface.class, TestInterface.class.getPackage().getName());
 
-        assertThat(instanceCollector.instances(), size(3));
+        assertThat(instanceCollector.instances(), size(5));
 
-        assertThat(Collections2.transform(instanceCollector.instances(), toName()), containsAll("EINS", "ZWEI", "TestClass"));
+        assertThat(Collections2.transform(instanceCollector.instances(), toName()), containsAll("EINS", "ZWEI", "ABC", "DEF", "TestClass"));
     }
 
     private static Function<TestInterface, String> toName() {

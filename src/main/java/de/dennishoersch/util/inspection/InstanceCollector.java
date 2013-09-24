@@ -16,6 +16,9 @@
 
 package de.dennishoersch.util.inspection;
 
+import static com.google.common.base.Predicates.not;
+import static com.google.common.collect.Iterables.filter;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +26,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -39,7 +43,7 @@ public class InstanceCollector<T> {
         Collection<Class<? extends T>> implementations = ClassInspectionUtil.findClassesImplementing(interfaceClass, basePackage);
 
         ImmutableSet.Builder<T> instances = ImmutableSet.builder();
-        for (Class<? extends T> impl : implementations) {
+        for (Class<? extends T> impl : filter(implementations, not(isAnonymous()))) {
             instances.addAll(getInstances(impl));
         }
 
@@ -62,5 +66,19 @@ public class InstanceCollector<T> {
             logger.error("Can not create instance of '" + clazz + "'!", e);
         }
         return Collections.emptyList();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Predicate<Class<? extends T>> isAnonymous() {
+        return (Predicate<Class<? extends T>>) (Predicate<?>) IsAnonymous.INSTANCE;
+    }
+
+    private enum IsAnonymous implements Predicate<Class<?>> {
+        INSTANCE;
+
+        @Override
+        public boolean apply(Class<?> input) {
+            return input.isAnonymousClass();
+        }
     }
 }
